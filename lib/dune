@@ -1,0 +1,8 @@
+(library
+ (name presto)
+ (modules assembly parse settings tokens parse ast lex)
+ (libraries batteries ppx_deriving ppx_inline_test camlp-streams)
+  (preprocess
+  (pps ppx_deriving.show))
+  (instrumentation
+  (backend bisect_ppx)))

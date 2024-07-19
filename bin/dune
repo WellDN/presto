@@ -1,0 +1,4 @@
+(executable
+ (public_name presto)
+ (name main)
+ (libraries presto cmdliner))
