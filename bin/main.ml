@@ -92,7 +92,7 @@ let src_file =
 
 let cmd =
   let doc = "A not-quite-C compiler" in
-  let info = Cmd.info "nqcc" ~doc in
+  let info = Cmd.info "presto" ~doc in
   Cmd.v info Term.(const driver $ target $ debug $ stage $ src_file)
 
 let main () = exit (Cmd.eval cmd)
