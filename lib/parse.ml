@@ -53,17 +53,20 @@ let parse_statement tokens =
     
 (* <function> ::= "int" <identifier> "(" ")" "{" <statement> "}" *)
 let parse_function_definition tokens =
-    let _ = expect KWInt tokens in
-    let fun_name = parse_id tokens in
-    let _ =
-        expect T.OpenParen tokens;
-        expect T.CloseParen tokens;
-        expect T.OpenBrace tokens;
-        expect T.CloseBrace tokens
-    in
-    let statement = parse_statement tokens in
-    let _ = expect T.CloseBrace tokens in
-    Function { name = fun_name; body = statement }
+  let _ = expect T.KWInt tokens in
+  let fun_name = parse_id tokens in
+  let _ =
+    expect T.OpenParen tokens;
+    (* Instead of expecting a KWVoid, allow an empty parameter list *)
+    (match Stream.peek tokens with
+    | Some T.CloseParen -> ()
+    | _ -> raise_error ~expected:(Tok T.CloseParen) ~actual:(Stream.next tokens));
+    expect T.CloseParen tokens;
+    expect T.OpenBrace tokens
+  in
+  let statement = parse_statement tokens in
+  let _ = expect T.CloseBrace tokens in
+  Function { name = fun_name; body = statement }
 
 let parse tokens =
     try
