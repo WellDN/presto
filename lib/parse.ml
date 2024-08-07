@@ -18,6 +18,14 @@ let raise_error ~expected ~actual =
     in
     raise (ParseError msg)
 
+    (* Helper functions *)
+
+let peek tokens = 
+    match Stream.peek tokens with
+    (* non-empty stream *)
+    | Some t -> t
+    | None -> raise Stream.Failure
+
 let expect expected tokens =
     let actual = Stream.next tokens in
     if actual <> expected then raise_error ~expected:(Tok expected) ~actual
@@ -38,11 +46,44 @@ let parse_id tokens =
     | T.Identifier x -> x
     | other -> raise_error ~expected:(Name "an identifier") ~actual:other
 
-(* <exp> ::= <int> *)
-let parse_expression tokens =
+(* <int> ::= ? A constant_token ? *)
+let parse_constant tokens =
     match Stream.next tokens with
     | T.Constant c -> Constant c (* perhaps should be -> Constant c. but i can pass (-> T.Constant c) / (-> c) have no idea of the difference but wcyd *)
-    | other -> raise_error ~expected:(Name "an expression") ~actual:other
+    | _ -> 
+            raise(ParseError "Internal error when parsing constant") [@coverage off]
+
+(* <unop> ::= "-" | "~" *)
+let parse_unop tokens =
+    match Stream.next tokens with
+    | T.Tilde -> Complement
+    | T.Hyphen -> Negate
+    (* We only call this when we know next token is unop *)
+    | _ ->
+            raise (ParseError "Internal error parsing unary operator")
+            [@coverage off]
+
+let rec parse_expression tokens =
+    let next_token = peek tokens in
+    match next_token with
+    (*constant*)
+    | T.Constant _ -> parse_constant tokens
+    (* Unary *)
+    | T.Hyphen | T.Tilde ->
+            let operator = parse_unop tokens in
+            let inner_exp = parse_expression tokens in
+            Unary (operator, inner_exp)
+    (* parenthesized expression *)   
+    | T.OpenParen ->
+            (* Stream.junk consumes open param *)
+            let _ = Stream.junk tokens in
+            let e = parse_expression tokens in
+            let _ = expect T.CloseParen tokens in
+            e
+    (* errors *)
+    | t -> raise_error ~expected:(Name "an expression") ~actual:t
+
+    
 
 (* <statement> ::= "return" <exp> ";" *)
 let parse_statement tokens =
