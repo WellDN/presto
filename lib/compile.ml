@@ -23,7 +23,7 @@ let compile stage src_file =
         (* Assembly generation has three steps:
          * 1. convert TACKY to assembly *)
             let asm_ast = Codegen.gen tacky in
-        (* print pre-pseudoreg-allocation assembly if debug enabled *)
+        (* print pre-pseudoreg-allocation assembly if debug is enabled *)
         (if !Settings.debug then
            let prealloc_filename =
              Filename.chop_extension src_file ^ ".prealloc.debug.s"
