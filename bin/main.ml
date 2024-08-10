@@ -1,5 +1,4 @@
 open Cmdliner
-
 open Presto
 
 (* what platform are we on? *)
