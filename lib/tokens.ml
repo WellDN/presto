@@ -20,4 +20,13 @@ type t =
   | Star
   | Slash
   | Percentage
+  | Bang
+  | LogicalAnd
+  | LogicalOr
+  | DoubleEqual
+  | NotEqual
+  | LessThan
+  | GreaterThan
+  | LessOrEqual
+  | GreaterOrEqual
 [@@deriving show]

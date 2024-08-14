@@ -42,6 +42,10 @@ let expect_empty tokens =
 let get_precendence = function
     | T.Star | T.Slash | T.Percentage -> Some 50
     | T.Plus | T.Hyphen -> Some 45
+    | T.(LessThan | LessOrEqual | GreaterThan | GreaterOrEqual) -> Some 35
+    | T.(DoubleEqual | NotEqual) -> Some 30
+    | T.LogicalAnd -> Some 10
+    | T.LogicalOr -> Some 5
     | _ -> None
 
 (* parsing grammar symbols *)
@@ -59,17 +63,18 @@ let parse_constant tokens =
     | _ -> 
             raise(ParseError "Internal error when parsing constant") [@coverage off]
 
-(* <unop> ::= "-" | "~" *)
+(* <unop> ::= "-" | "~" | "!" *)
 let parse_unop tokens =
     match Stream.next tokens with
     | T.Tilde -> Complement
     | T.Hyphen -> Negate
+    | T.Bang -> Not
     (* We only call this when we know next token is unop *)
     | _ ->
             raise (ParseError "Internal error parsing unary operator")
             [@coverage off]
 
-    (* <binop> ::= "-" | "+" | "*" | "/" | "%" *)
+    (* <binop> ::= "-" | "+" | "*" | "/" | "%" | "&&" | "||" | "==" | "!=" | "<" | ">" | "<=" | ">=" | *)
 let parse_binop tokens =
     match Stream.next tokens with
     | T.Plus -> Add
@@ -77,6 +82,14 @@ let parse_binop tokens =
     | T.Star -> Multiply
     | T.Slash -> Divide
     | T.Percentage -> Mod
+    | T.LogicalAnd -> And
+    | T.LogicalOr -> Or
+    | T.DoubleEqual -> Equal
+    | T.NotEqual -> NotEqual
+    | T.LessThan -> LessThan
+    | T.GreaterThan -> GreaterThan
+    | T.LessOrEqual -> LessOrEqual
+    | T.GreaterOrEqual -> GreaterOrEqual 
     | _ ->
             raise (ParseError "Internal error when parsing binary operator")
             [@coverage off]
@@ -88,7 +101,7 @@ let rec parse_factor tokens =
     (*constant*)
     | T.Constant _ -> parse_constant tokens
     (* Unary *)
-    | T.Hyphen | T.Tilde ->
+    | T.Hyphen | T.Tilde | T.Bang ->
             let operator = parse_unop tokens in
             let inner_exp = parse_factor tokens in
             Unary (operator, inner_exp)

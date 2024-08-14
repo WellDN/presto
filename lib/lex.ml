@@ -25,6 +25,15 @@ let rec lex_helper chars =
     | '*' :: rest -> Star :: lex_helper rest
     | '/' :: rest -> Slash :: lex_helper rest
     | '%' :: rest -> Percentage :: lex_helper rest
+    | '&' :: '&' :: rest -> LogicalAnd :: lex_helper rest
+    | '|' :: '|' :: rest -> LogicalOr :: lex_helper rest
+    | '=' :: '=' :: rest -> DoubleEqual :: lex_helper rest
+    | '!' :: '=' :: rest -> NotEqual :: lex_helper rest
+    | '<' :: '=' :: rest -> LessOrEqual :: lex_helper rest
+    | '>' :: '=' :: rest -> GreaterOrEqual :: lex_helper rest
+    | '<' :: rest -> LessThan :: lex_helper rest
+    | '>' :: rest -> GreaterThan :: lex_helper rest
+    | '!' :: rest -> Bang :: lex_helper rest
     | c :: rest when Char.is_whitespace c -> lex_helper rest
     | c :: _ when Char.is_digit c -> lex_constant chars
     | _ -> lex_identifier chars

@@ -17,13 +17,12 @@ _build/default/bin/main.exe -t linux --parse return_2.c
 ```
 
 ```generate assembly
-_build/default/bin/main.exe -t linux --S return_2.c
+_build/default/bin/main.exe -t linux -S return_2.c
 ```
 ```create executable
 ./_build/default/bin/main.exe -t linux return_2.c
 ```
 
 ```check output
-./return_2
-echo $?
+./return_2; echo $?
 ```
