@@ -1,4 +1,4 @@
-type stage = Lex | Parse | Codegen | Assembly | Executable | Tacky
+type stage = Lex | Parse | Codegen | Assembly | Executable | Tacky | Validate
 type target = OS_X | Linux
 
 let platform = ref OS_X (* default to OS X *)

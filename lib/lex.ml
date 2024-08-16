@@ -34,6 +34,7 @@ let rec lex_helper chars =
     | '<' :: rest -> LessThan :: lex_helper rest
     | '>' :: rest -> GreaterThan :: lex_helper rest
     | '!' :: rest -> Bang :: lex_helper rest
+    | '=' :: rest -> EqualSign :: lex_helper rest
     | c :: rest when Char.is_whitespace c -> lex_helper rest
     | c :: _ when Char.is_digit c -> lex_constant chars
     | _ -> lex_identifier chars
