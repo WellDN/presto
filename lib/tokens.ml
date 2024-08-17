@@ -1,4 +1,5 @@
 [@@@coverage exclude_file]
+
 type t =
   (* tokens with contents *)
   | Identifier of string
@@ -15,23 +16,23 @@ type t =
   | OpenBrace
   | CloseBrace
   | Semicolon
-  | DoubleHyphen
   | Hyphen
+  | DoubleHyphen
   | Tilde
   | Plus
   | Star
   | Slash
-  | Percentage
-  | Bang
-  | LogicalAnd
-  | LogicalOr
-  | DoubleEqual
-  | NotEqual
+  | Percent
+  | Bang (* ! *)
+  | LogicalAnd (* && *)
+  | LogicalOr (* || *)
+  | DoubleEqual (* == *)
+  | NotEqual (* != *)
   | LessThan
   | GreaterThan
   | LessOrEqual
   | GreaterOrEqual
-  | EqualSign 
-  | Colon
+  | EqualSign (* = *)
   | QuestionMark
+  | Colon
 [@@deriving show]

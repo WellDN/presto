@@ -48,10 +48,10 @@ let assemble_and_link ?(cleanup = true) src =
     run_command cleanup_cmd
 
 let driver target debug stage src =
-  let _ = 
-      Settings.platform := target; 
-      Settings.debug := debug 
-    in
+  let _ =
+    Settings.platform := target;
+    Settings.debug := debug
+  in
   let preprocessed_name = preprocess src in
   let assembly_name = compile stage preprocessed_name in
   if stage = Settings.Executable then
@@ -69,10 +69,11 @@ let stage =
     (Settings.Parse, Arg.info [ "parse" ] ~doc)
   in
   let validate =
-      let doc = "Run the lexer, parser and semantic analysis" in
-      (Settings.Validate, Arg.info [ "validate" ] ~doc) in
+    let doc = "Run the lexer, parser, and semantic analysis " in
+    (Settings.Validate, Arg.info [ "validate" ] ~doc)
+  in
   let tacky =
-    let doc = "Run the lexer, parser, semantic analysis and tacky generator" in
+    let doc = "Run the lexer, parser, semantic analysis, and tacky generator" in
     (Settings.Tacky, Arg.info [ "tacky" ] ~doc)
   in
   let codegen =
@@ -83,7 +84,10 @@ let stage =
     let doc = "Stop before assembling (keep .s file)" in
     (Settings.Assembly, Arg.info [ "s"; "S" ] ~doc)
   in
-  Arg.(value & vflag Settings.Executable [ lex; parse; validate; tacky; codegen; assembly ])
+  Arg.(
+    value
+    & vflag Settings.Executable
+        [ lex; parse; validate; tacky; codegen; assembly ])
 
 let target =
   let doc = "Choose target platform" in
@@ -102,7 +106,7 @@ let src_file =
 
 let cmd =
   let doc = "A not-quite-C compiler" in
-  let info = Cmd.info "presto" ~doc in
+  let info = Cmd.info "nqcc" ~doc in
   Cmd.v info Term.(const driver $ target $ debug $ stage $ src_file)
 
 let main () = exit (Cmd.eval cmd)

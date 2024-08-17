@@ -1,47 +1,48 @@
 open Batteries
 open Tokens
 
+(* regular expressions for tokens *)
 let id_regexp = Str.regexp {|[A-Za-z_][A-Za-z0-9_]*\b|}
 let const_regexp = Str.regexp {|[0-9]+\b|}
 
 let id_to_tok = function
-    | "int" -> KWInt
-    | "return" -> KWReturn 
-    | "void" -> KWVoid 
-    | "if" -> KWIf
-    | "else" -> KWElse
-    | other -> Identifier other
+  | "int" -> KWInt
+  | "return" -> KWReturn
+  | "void" -> KWVoid
+  | "if" -> KWIf
+  | "else" -> KWElse
+  | other -> Identifier other
 
-let rec lex_helper chars = 
-    match chars with
-    | [] -> []
-    | '{' :: rest -> OpenBrace :: lex_helper rest
-    | '}' :: rest -> CloseBrace :: lex_helper rest
-    | '(' :: rest -> OpenParen :: lex_helper rest
-    | ')' :: rest -> CloseParen :: lex_helper rest
-    | ';' :: rest -> Semicolon :: lex_helper rest
-    | '-' :: '-' :: rest -> DoubleHyphen :: lex_helper rest
-    | '-' :: rest -> Hyphen :: lex_helper rest
-    | '~' :: rest -> Tilde :: lex_helper rest
-    | '+' :: rest -> Plus :: lex_helper rest
-    | '*' :: rest -> Star :: lex_helper rest
-    | '/' :: rest -> Slash :: lex_helper rest
-    | '%' :: rest -> Percentage :: lex_helper rest
-    | '&' :: '&' :: rest -> LogicalAnd :: lex_helper rest
-    | '|' :: '|' :: rest -> LogicalOr :: lex_helper rest
-    | '=' :: '=' :: rest -> DoubleEqual :: lex_helper rest
-    | '!' :: '=' :: rest -> NotEqual :: lex_helper rest
-    | '<' :: '=' :: rest -> LessOrEqual :: lex_helper rest
-    | '>' :: '=' :: rest -> GreaterOrEqual :: lex_helper rest
-    | '<' :: rest -> LessThan :: lex_helper rest
-    | '>' :: rest -> GreaterThan :: lex_helper rest
-    | '!' :: rest -> Bang :: lex_helper rest
-    | '=' :: rest -> EqualSign :: lex_helper rest
-    | ':' :: rest -> EqualSign :: lex_helper rest
-    | '?' :: rest -> EqualSign :: lex_helper rest
-    | c :: rest when Char.is_whitespace c -> lex_helper rest
-    | c :: _ when Char.is_digit c -> lex_constant chars
-    | _ -> lex_identifier chars
+let rec lex_helper chars =
+  match chars with
+  | [] -> [] (* we've processed the whole input *)
+  | '&' :: '&' :: rest -> LogicalAnd :: lex_helper rest
+  | '|' :: '|' :: rest -> LogicalOr :: lex_helper rest
+  | '=' :: '=' :: rest -> DoubleEqual :: lex_helper rest
+  | '!' :: '=' :: rest -> NotEqual :: lex_helper rest
+  | '<' :: '=' :: rest -> LessOrEqual :: lex_helper rest
+  | '>' :: '=' :: rest -> GreaterOrEqual :: lex_helper rest
+  | '<' :: rest -> LessThan :: lex_helper rest
+  | '>' :: rest -> GreaterThan :: lex_helper rest
+  | '!' :: rest -> Bang :: lex_helper rest
+  | '=' :: rest -> EqualSign :: lex_helper rest
+  | '{' :: rest -> OpenBrace :: lex_helper rest
+  | '}' :: rest -> CloseBrace :: lex_helper rest
+  | '(' :: rest -> OpenParen :: lex_helper rest
+  | ')' :: rest -> CloseParen :: lex_helper rest
+  | ';' :: rest -> Semicolon :: lex_helper rest
+  | '-' :: '-' :: rest -> DoubleHyphen :: lex_helper rest
+  | '-' :: rest -> Hyphen :: lex_helper rest
+  | '~' :: rest -> Tilde :: lex_helper rest
+  | '+' :: rest -> Plus :: lex_helper rest
+  | '*' :: rest -> Star :: lex_helper rest
+  | '/' :: rest -> Slash :: lex_helper rest
+  | '%' :: rest -> Percent :: lex_helper rest
+  | '?' :: rest -> QuestionMark :: lex_helper rest
+  | ':' :: rest -> Colon :: lex_helper rest
+  | c :: rest when Char.is_whitespace c -> lex_helper rest
+  | c :: _ when Char.is_digit c -> lex_constant chars
+  | _ -> lex_identifier chars
 
 and lex_constant input_chars =
   let input = String.implode input_chars in
