@@ -7,6 +7,8 @@ type t =
   | KWInt
   | KWReturn
   | KWVoid
+  | KWIf
+  | KWElse
   (* punctuation *)
   | OpenParen
   | CloseParen
@@ -30,4 +32,6 @@ type t =
   | LessOrEqual
   | GreaterOrEqual
   | EqualSign 
+  | Colon
+  | QuestionMark
 [@@deriving show]

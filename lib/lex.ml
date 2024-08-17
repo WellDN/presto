@@ -8,6 +8,8 @@ let id_to_tok = function
     | "int" -> KWInt
     | "return" -> KWReturn 
     | "void" -> KWVoid 
+    | "if" -> KWIf
+    | "else" -> KWElse
     | other -> Identifier other
 
 let rec lex_helper chars = 
@@ -35,6 +37,8 @@ let rec lex_helper chars =
     | '>' :: rest -> GreaterThan :: lex_helper rest
     | '!' :: rest -> Bang :: lex_helper rest
     | '=' :: rest -> EqualSign :: lex_helper rest
+    | ':' :: rest -> EqualSign :: lex_helper rest
+    | '?' :: rest -> EqualSign :: lex_helper rest
     | c :: rest when Char.is_whitespace c -> lex_helper rest
     | c :: _ when Char.is_digit c -> lex_constant chars
     | _ -> lex_identifier chars
